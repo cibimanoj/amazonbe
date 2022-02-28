@@ -2,6 +2,7 @@ const express =require("express");
 const router =new express.Router();
 const products=require("../models/productSchema");
 const USER=require("../models/userSchema");
+const bcrypt = require("bcryptjs");
 
 router.get("/products",async(req,res)=>{
     try{
@@ -58,6 +59,28 @@ router.post("/register", async (req, res) => {
     }
 
 });
+router.post("/login",async (req,res)=>{
+    const {email,password} = req.body;
+    if(!email||!password){
+        res.status(400).json({error:"Fill all the fields"})
+    }
+    try{
+        const userLogin=await USER.findOne({email:email});
+        console.log(userLogin+"user value")
+        if(userLogin){
+            const isMatch= await bcrypt.compare(password,userLogin.password)
+            console.log(isMatch );
+            if(!isMatch){
+                res.status(400).json({error:"Invalid password"})
+            }else{
+                res.status(201).json({message:"logged successfully"})
+            }
+        }
+
+    }catch{
+        res.status(400).json({error:"invalid details"})
+    }
+})
 
 
 module.exports =router;

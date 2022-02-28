@@ -13,7 +13,10 @@ app.use(express.json());
 app.use(cors())
 app.use(router)
 
-const PORT=8005;
+const PORT=process.env.PORT||3000;
+app.get("/",(req,res)=>{
+    res.send("🙋 guys this is cibi manoj")
+})
 app.listen(PORT,()=>{
     console.log(`server is running on port number${PORT}`)
 })
